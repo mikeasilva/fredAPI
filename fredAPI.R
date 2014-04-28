@@ -53,15 +53,15 @@ fredAPI <- function(){
   }
   
   # This function sets the API key
-  key <- function(x){
-    api.key <<- x
+  key <- function(api.key){
+    api.key <<- api.key
   }
   
   # The following group of functions interact with economic data categories.
   category <- function(category.id = NULL, args.list = list(), url.vector = F){
     # Check for series id
     if(is.null(category.id)){
-      message("fredAPI: category id not defined")
+      message("fredAPI: category is not defined")
     } else{
       if(class(url.vector) == "logical"){
         # the url.vector is set to FALSE
@@ -72,86 +72,215 @@ fredAPI <- function(){
     }
   }
   
-  categories <- function(category.id = NULL, args.list){
-    url.vector <- c("category", )
-    return(category(args.list))
-  }
-  
-  children <- function(category.id = NULL){
+  category_children <- function(category.id = NULL){
     url.vector <- c("category", "children")
     return(category(category.id, NULL, url.vector))
   }
   
-  related <- function(category.id){
-    
+  category_related <- function(category.id = NULL){
+    url.vector <- c("category", "related")
+    return(category(category.id, NULL, url.vector))
   }
   
-  category_series <- function(category.id){
-    
+  category_series <- function(category.id = NULL){
+    url.vector <- c("category", "series")
+    return(category(category.id, NULL, url.vector))
   }
   
+  category_tags <- function(category.id = NULL){
+    url.vector <- c("category", "tags")
+    return(category(category.id, NULL, url.vector))
+  }
+  
+  category_related_tags <- function(category.id = NULL, tag.names = NULL){
+    url.vector <- c("category", "related_tags")
+    args.list$tag_names <- tag.names
+    return(category(category.id, agrs.list, url.vector))
+  }
   
   # Interact with economic data releases.
   releases <- function(){
-    
+    url.vector <- c("releases")
+    args.list <- list()
+    return (get(url.vector, args.list))
   }
   
-  release <- function(id){
-    
+  releases_dates <- function(){
+    url.vector <- c("releases", "related_tags")
+    args.list <- list()
+    return (get(url.vector, args.list))
   }
   
-  dates <- function(){
-    
-  }
-  
-  
-  # The following functions interact with economic data series.
-  
-  
-  series <- function(series.id = NULL, release = FALSE){
-    # Check for series id
-    if(is.null(series.id)){
-      message("fredAPI: series id not defined")
-    } else {
-      args.list <- list(series_id = series.id)
-      url.vector <- c("series")
-      if(release)
-        url.vector <- c(url.vector,"release")
+  release <- function(release.id = NULL, args.list = list(), url.vector = F){
+    # Check for release id
+    if(is.null(release.id)){
+      message("fredAPI: release is not defined")
+    } else{
+      if(class(url.vector) == "logical"){
+        # the url.vector is set to FALSE
+        url.vector <- c("release")
+      }
+      args.list$release_id <- release.id
       return (get(url.vector, args.list))
     }
   }
   
-  observations <- function(series.id = NULL){
+  release_dates <- function(release.id = NULL){
+    url.vector <- c("release", "dates")
+    return(release(release.id, NULL, url.vector))    
+  }
+  
+  release_series <- function(release.id = NULL){
+    url.vector <- c("release", "series")
+    return(release(release.id, NULL, url.vector))    
+  }
+  
+  release_sources <- function(release.id = NULL){
+    url.vector <- c("release", "sources")
+    return(release(release.id, NULL, url.vector))    
+  }
+  
+  release_tags <- function(release.id = NULL){
+    url.vector <- c("release", "tags")
+    return(release(release.id, NULL, url.vector))    
+  }
+  
+  release_related_tags <- function(release.id = NULL, tag.names = NULL){
+    url.vector <- c("release", "dates")
+    args.list$tag_names <- tag.names
+    return(release(release.id, args.list, url.vector))    
+  }
+  
+  series <- function(series.id = NULL, args.list = list(), url.vector = F){
     # Check for series id
     if(is.null(series.id)){
-      message("fredAPI: series id not defined")
-    } else {
-      args.list <- list(series_id = series.id)
-      url.vector <- c("series","observations")
+      message("fredAPI: series is not defined")
+    } else{
+      if(class(url.vector) == "logical"){
+        # the url.vector is set to FALSE
+        url.vector <- c("series")
+      }
+      args.list$series_id <- series.id
       return (get(url.vector, args.list))
     }
   }
   
-  search <- function(term){
-    return(term)
+  series_categories <- function(series.id = NULL){
+    url.vector <- c("series", "categories")
+    return(series(series.id, NULL, url.vector))    
   }
   
-  updates <- function(){
-    
+  series_observations <- function(series.id = NULL){
+    url.vector <- c("series","observations")
+    return(series(series.id, NULL, url.vector))
   }
   
-  vintage <- function(x){
-    return(x)
+  series_release <- function(series.id = NULL){
+    url.vector <- c("series", "release")
+    return(series(series.id, NULL, url.vector))
   }
   
+  series_search <- function(search.text = NULL){
+    # Check for search text
+    if(is.null(search.text)){
+      message("fredAPI: search text is not defined")
+    } else{
+      url.vector <- c("series","search")
+      args.list$search_text <- search.text
+      return (get(url.vector, args.list))
+    }
+  }
   
-  # Query economic data sources.
+  series_search_tags <- function(series.search.text = NULL){
+    # Check for series search text
+    if(is.null(series.search.text)){
+      message("fredAPI: series search text is not defined")
+    } else{
+      url.vector <- c("series","search", "tags")
+      args.list$series_search_text <- series.search.text
+      return (get(url.vector, args.list))
+    }
+  }
+  
+  series_search_related_tags <- function(series.search.text = NULL, tag.names = NULL){
+    # Check for series search text
+    if(is.null(series.search.text)){
+      message("fredAPI: series search text is not defined")
+    } else if(is.null(tag.names)){
+      message("fredAPI: tag names text is not defined")
+    } else{
+      url.vector <- c("series","search", "related_tags")
+      args.list$series_search_text <- series.search.text
+      args.list$tag_names <- tag.names
+      return (get(url.vector, args.list))
+    }
+  }
+  
+  series_tags <- function(series.id = NULL){
+    url.vector <- c("series", "tags")
+    return(series(series.id, NULL, url.vector))
+  }
+  
+  series_updates <- function(){
+    url.vector <- c("series", "updates")
+    args.list <- list()
+    return (get(url.vector, args.list))
+  }
+  
+  series_vintagedates <- function(series.id = NULL){
+    url.vector <- c("series", "vintagedates")
+    return(series(series.id, NULL, url.vector))
+  }
+
   sources <- function(){
-    
+    url.vector <- c("sources")
+    args.list = list()
+    return (get(url.vector, args.list)) 
   }
   
-  fredSource <- function(x){
-    return(x)
+  fred_source <- function(source.id = NULL, args.list = list(), url.vector = F){
+    # Check for series id
+    if(is.null(source.id)){
+      message("fredAPI: source is not defined")
+    } else{
+      if(class(url.vector) == "logical"){
+        # the url.vector is set to FALSE
+        url.vector <- c("source")
+      }
+      args.list$source_id <- source.id
+      return (get(url.vector, args.list))
+    }
+  }
+  
+  source_releases <- function(source.id = NULL){
+    url.vector <- c("source", "releases")
+    return(fred_source(source.id, NULL, url.vector))
+  }
+  
+  tags <- function(args.list = list(), url.vector = F){
+    if(class(url.vector) == "logical"){
+      # the url.vector is set to FALSE
+      url.vector <- c("tags")
+    }
+    args.list$tag_names <- tag.names
+    return (get(url.vector, args.list))
+  }
+  
+  related_tags <- function(tag.names = NULL){
+    # Check for series id
+    if(is.null(tag.names)){
+      message("fredAPI: tag names is not defined")
+    } else{
+      url.vector <- c("related_tags")
+      args.list$tag_names <- tag.names
+      return (get(url.vector, args.list))
+    }
+  }
+  
+  tags_series <- function(tag.names = NULL){
+    url.vector <- c("tags", "series")
+    args.list <- list("tag_names" = tag.names)
+    return(tags(args.list, url.vector))
   }
   
   nc <- list(key = key,
@@ -159,8 +288,8 @@ fredAPI <- function(){
        json = json,
        xml = xml,
        category = category, 
-       children = children,
-       related = related,
+       category_children = category_children,
+       category_related = category_related,
        category_series = category_series,
        category_tags = category_tags,
        category_related_tags = category_related_tags,
@@ -170,12 +299,25 @@ fredAPI <- function(){
        release_dates = release_dates,
        release_series = release_series,
        relase_sources = release_sources,
-       release_tags = relase_tags,
-       search = search,
-       updates = updates,
-       vintage = vintage,
+       release_tags = release_tags,
+       release_related_tags = release_related_tags,
+       series = series,
+       series_categories = series_categories,
+       series_observations = series_observations,
+       series_release = series_release,
+       series_search = series_search,
+       series_search_tags = series_search_tags,
+       series_search_releated_tags = series_search_related_tags,
+       series_tags = series_tags,
+       series_updates = series_updates,
+       series_vintagedates = series_vintagedates,
        sources = sources,
-       source = fredSource)
+       source = fred_source,
+       source_releases = source_releases,
+       tags = tags,
+       related_tags = related_tags,
+       tags_series = tags_series,
+       observations = series_observations)
   nc <- list2env(nc)
   class(nc) <- "fredAPI"
   return(nc)  

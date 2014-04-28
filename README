@@ -1,0 +1,7 @@
+fredAPI
+R wrapper of the St. Louis Federal Reserve Bank's FRED API web service for 
+retrieving economic data.
+
+FRED API Documentation: http://api.stlouisfed.org/docs/fred/.  
+
+Sign up for a FRED API key: http://api.stlouisfed.org/api_key.html.
